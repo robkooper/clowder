@@ -39,12 +39,14 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - uses: actions/cache@v1
+        id: cache
         with:
           path: ~/buildkit
           key: ${{ runner.os }}-docker-${{ hashFiles('project/Build.scala') }}
           restore-keys: |
             ${{ runner.os }}-docker-
       - name: restore buildkit for cache
+        if: steps.cache.outputs.cache-hit == 'true'
         run: |
           sudo rsync -rlpt --delete -o root -g root ~/buildkit/ /var/lib/docker/buildkit/ 
       - name: Build image
