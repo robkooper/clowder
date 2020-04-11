@@ -48,7 +48,7 @@ jobs:
       - name: restore buildkit for cache
         if: steps.cache.outputs.cache-hit == 'true'
         run: |
-          sudo rsync -rlpt --delete -o root -g root buildkit/ /var/lib/docker/buildkit/ 
+          sudo rsync -rpt --delete -o root -g root buildkit/ /var/lib/docker/buildkit/ 
       - name: Build image
         run: |
           export DOCKER_BUILDKIT=1
@@ -108,6 +108,6 @@ jobs:
           done
       - name: save buildkit for cache
         run: |
-          sudo ls /var/lib/docker/buildkit
+          sudo ls -lR /var/lib/docker/buildkit
           echo "${PWD} = ${HOME}"
-          sudo rsync -rlpt --delete -o $(whoami) -g $(id -ng) /var/lib/docker/buildkit/ buildkit/
+          sudo rsync -rpt --delete -o $(whoami) -g $(id -ng) /var/lib/docker/buildkit/ buildkit/
