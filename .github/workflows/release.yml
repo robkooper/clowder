@@ -43,7 +43,7 @@ jobs:
           path: /var/lib/docker/buildkit
           key: ${{ runner.os }}-docker-${{ hashFiles('project/Build.scala') }}
           restore-keys: |
-          ${{ runner.os }}-docker-
+            ${{ runner.os }}-docker-
       - name: Build image
         run: |
           export DOCKER_BUILDKIT=1
