@@ -111,5 +111,5 @@ jobs:
           sudo ls -lR /var/lib/docker/buildkit
           echo "${PWD} = ${HOME}"
           mkdir buildkit /tmp/buildkit
-          sudo rsync -rpt --delete -o $(whoami) -g $(id -ng) /var/lib/docker/buildkit/ /tmp/buildkit/
+          echo "$(whoami) $(id -ng)"
           sudo rsync -rpt --delete -o $(whoami) -g $(id -ng) /var/lib/docker/buildkit/ /tmp/buildkit/
