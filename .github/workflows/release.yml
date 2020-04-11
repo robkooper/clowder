@@ -41,7 +41,7 @@ jobs:
       - uses: actions/cache@v1
         with:
           path: /var/lib/docker/buildkit
-          key: ${{ runner.os }}-docker }}
+          key: ${{ runner.os }}-docker
           restore-keys: |
             ${{ runner.os }}-docker
       - name: Build image
