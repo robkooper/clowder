@@ -22,7 +22,7 @@ jobs:
           - check
         include:
           - clowder
-            FOLDER: .
+            FOLDER: "."
             IMAGE: clowder
           - toolserver
             FOLDER: scripts/toollaunchservice
