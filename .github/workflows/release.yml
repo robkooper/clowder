@@ -38,6 +38,12 @@ jobs:
             IMAGE: check
     steps:
       - uses: actions/checkout@v2
+      - uses: actions/cache@v1
+        with:
+          path: /var/lib/docker/buildkit
+          key: ${{ runner.os }}-docker }}
+          restore-keys: |
+            ${{ runner.os }}-docker
       - name: Build image
         run: |
           export DOCKER_BUILDKIT=1
