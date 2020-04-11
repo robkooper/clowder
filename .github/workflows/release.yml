@@ -40,10 +40,13 @@ jobs:
       - uses: actions/checkout@v2
       - uses: actions/cache@v1
         with:
-          path: /var/lib/docker/buildkit
+          path: ~/buildkit
           key: ${{ runner.os }}-docker-${{ hashFiles('project/Build.scala') }}
           restore-keys: |
             ${{ runner.os }}-docker-
+      - name: restore buildkit for cache
+        run: |
+          sudo rsync -rlpt --delete -o root -g root ~/buildkit/ /var/lib/docker/buildkit/ 
       - name: Build image
         run: |
           export DOCKER_BUILDKIT=1
@@ -101,4 +104,6 @@ jobs:
               docker push clowder/${{ matrix.IMAGE }}:$T
             fi
           done
-
+      - name: save buildkit for cache
+        run: |
+          sudo rsync -rlpt --delete -o $(whoami) -g $(id -ng) /var/lib/docker/buildkit/ ~/buildkit/
