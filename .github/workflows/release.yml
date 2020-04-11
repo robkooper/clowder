@@ -21,19 +21,19 @@ jobs:
           - monitor
           - check
         include:
-          - clowder
+          - name: clowder
             FOLDER: "."
             IMAGE: clowder
-          - toolserver
+          - name: toolserver
             FOLDER: scripts/toollaunchservice
             IMAGE: toolserver
-          - mongo-init
+          - name: mongo-init
             FOLDER: scripts/mongo-init
             IMAGE: mongo-init
-          - monitor
+          - name: monitor
             FOLDER: scripts/monitor
             IMAGE: monitor
-          - check
+          - name: check
             FOLDER: scripts/check
             IMAGE: check
     steps:
