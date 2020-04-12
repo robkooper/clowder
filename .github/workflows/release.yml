@@ -42,7 +42,7 @@ jobs:
         id: cache
         with:
           path: /tmp/buildkit
-          key: ${{ runner.os }}-${{ matrix.name }}-${{ hashFiles('project/Build.scala') }}
+          key: clowder-${{ matrix.name }}-${{ hashFiles('project/Build.scala') }}
           restore-keys: |
             ${{ runner.os }}-${{ matrix.name }}-
       - name: restore buildkit for cache
@@ -109,10 +109,6 @@ jobs:
           done
       - name: save buildkit for cache
         run: |
-          sudo ls -lR /var/lib/docker/buildkit
-          echo "${PWD} = ${HOME}"
-          mkdir buildkit /tmp/buildkit
-          echo "$(whoami) $(id -ng)"
           sudo rsync -av --delete /var/lib/docker/buildkit/ /tmp/buildkit/
           sudo chown -R $(whoami) /tmp/buildkit
           du -sh /tmp/buildkit
