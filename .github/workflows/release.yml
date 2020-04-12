@@ -49,7 +49,14 @@ jobs:
         if: steps.cache.outputs.cache-hit == 'true'
         run: |
           echo "COPY BACK"
-          sudo rsync -rpt --delete -o root -g root /tmp/buildkit /var/lib/docker/buildkit/ 
+          # sudo rsync -rpt --delete -o root -g root /tmp/buildkit /var/lib/docker/buildkit/ 
+          ls -ld /var/lib/docker
+          ls -ld /var/lib/docker/buildkit
+          ls -al /home/runner
+          ls -al /home/runner/work
+          ls -al /home/runner/work/clowder
+          ls -al /home/runner/work/clowder/clowder
+          ls -al /home/runner/work/clowder/clowder/root
       - name: Build image
         run: |
           export DOCKER_BUILDKIT=1
