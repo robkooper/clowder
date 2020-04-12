@@ -17,8 +17,6 @@ COPY project /src/project
 RUN --mount=type=bind,source=${HOME}/.ivy2,target=/root/.ivy2,readwrite \
     --mount=type=bind,source=${HOME}/.m2,target=/root/.m2,readwrite \
     --mount=type=bind,source=${HOME}/.sbt,target=/root/.sbt,readwrite \
-    du -sh /root/.ivy2 /root/.sbt && \
-    ls /root/.ivy2 /root/.sbt && \
     ./sbt update
 
 # environemnt variables
