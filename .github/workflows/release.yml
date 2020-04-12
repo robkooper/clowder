@@ -48,6 +48,7 @@ jobs:
       - name: restore buildkit for cache
         if: steps.cache.outputs.cache-hit == 'true'
         run: |
+          echo "COPY BACK"
           sudo rsync -rpt --delete -o root -g root buildkit/ /var/lib/docker/buildkit/ 
       - name: Build image
         run: |
