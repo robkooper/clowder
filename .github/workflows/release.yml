@@ -41,15 +41,15 @@ jobs:
       - uses: actions/cache@v1
         id: cache
         with:
-          path: buildkit
-          key: ${{ runner.os }}-docker-${{ hashFiles('project/Build.scala') }}
+          path: ~/buildkit
+          key: ${{ runner.os }}-${{ matrix.name }}-${{ hashFiles('project/Build.scala') }}
           restore-keys: |
-            ${{ runner.os }}-docker-
+            ${{ runner.os }}-${{ matrix.name }}-
       - name: restore buildkit for cache
         if: steps.cache.outputs.cache-hit == 'true'
         run: |
           echo "COPY BACK"
-          sudo rsync -rpt --delete -o root -g root buildkit/ /var/lib/docker/buildkit/ 
+          sudo rsync -rpt --delete -o root -g root ~/buildkit/ /var/lib/docker/buildkit/ 
       - name: Build image
         run: |
           export DOCKER_BUILDKIT=1
@@ -113,4 +113,5 @@ jobs:
           echo "${PWD} = ${HOME}"
           mkdir buildkit /tmp/buildkit
           echo "$(whoami) $(id -ng)"
-          sudo rsync -av --delete /var/lib/docker/buildkit/ buildkit/
+          sudo rsync -av --delete /var/lib/docker/buildkit/ ~/buildkit/
+          sudo chown -R $(whoami) ~/buildkit
