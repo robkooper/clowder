@@ -14,9 +14,9 @@ WORKDIR /src
 # install clowder libraries (hopefully cached)
 COPY sbt* /src/
 COPY project /src/project
-RUN --mount=type=cache,target=/root/.ivy2 \
-    --mount=type=cache,target=/root/.m2 \
-    --mount=type=cache,target=/root/.sbt \
+RUN --mount=type=bind,source=${HOME}/.ivy2,target=/root/.ivy2,readwrite \
+    --mount=type=bind,source=${HOME}/.m2,target=/root/.m2,readwrite \
+    --mount=type=bind,source=${HOME}/.sbt,target=/root/.sbt,readwrite \
     du -sh /root/.ivy2 /root/.sbt && \
     ls /root/.ivy2 /root/.sbt && \
     ./sbt update
@@ -32,10 +32,10 @@ COPY lib /src/lib/
 COPY conf /src/conf/
 COPY public /src/public/
 COPY app /src/app/
-RUN --mount=type=cache,target=/root/.ivy2 \
-    --mount=type=cache,target=/root/.m2 \
-    --mount=type=cache,target=/root/.sbt \
-    --mount=type=cache,target=/src/target \
+RUN --mount=type=bind,source=${HOME}/.ivy2,target=/root/.ivy2,readwrite \
+    --mount=type=bind,source=${HOME}/.m2,target=/root/.m2,readwrite \
+    --mount=type=bind,source=${HOME}/.sbt,target=/root/.sbt,readwrite \
+    --mount=type=bind,source=${PWD}/target,target=/src/target \
     rm -rf target/universal/clowder-*.zip clowder clowder-* \
     && ./sbt dist \
     && ls -l target/universal/ \

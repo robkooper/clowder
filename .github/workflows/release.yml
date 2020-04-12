@@ -39,17 +39,23 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - uses: actions/cache@v1
-        id: cache
         with:
-          path: /tmp/buildkit
-          key: clowder-${{ matrix.name }}-${{ hashFiles('project/Build.scala') }}
+          path: ~/.m2
+          key: clowder-${{ matrix.name }}-m2-${{ hashFiles('project/Build.scala') }}
           restore-keys: |
             ${{ runner.os }}-${{ matrix.name }}-
-      - name: restore buildkit for cache
-        if: steps.cache.outputs.cache-hit == 'true'
-        run: |
-          sudo chown -R root.root /tmp/buildkit
-          sudo rsync -av --delete /tmp/buildkit /var/lib/docker/buildkit/ 
+      - uses: actions/cache@v1
+        with:
+          path: ~/.ivy
+          key: clowder-${{ matrix.name }}-ivy-${{ hashFiles('project/Build.scala') }}
+          restore-keys: |
+            ${{ runner.os }}-${{ matrix.name }}-
+      - uses: actions/cache@v1
+        with:
+          path: ~/.sbt
+          key: clowder-${{ matrix.name }}-sbt-${{ hashFiles('project/Build.scala') }}
+          restore-keys: |
+            ${{ runner.os }}-${{ matrix.name }}-
       - name: Build image
         run: |
           export DOCKER_BUILDKIT=1
@@ -107,10 +113,4 @@ jobs:
               docker push clowder/${{ matrix.IMAGE }}:$T
             fi
           done
-      - name: save buildkit for cache
-        run: |
-          sudo du -sh /tmp/buildkit
-          sudo rsync -av --delete /var/lib/docker/buildkit/ /tmp/buildkit/
-          sudo chown -R $(whoami) /tmp/buildkit
-          sudo du -sh /tmp/buildkit
           
