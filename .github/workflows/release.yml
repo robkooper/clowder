@@ -109,6 +109,8 @@ jobs:
           done
       - name: save buildkit for cache
         run: |
+          du -sh /tmp/buildkit
           sudo rsync -av --delete /var/lib/docker/buildkit/ /tmp/buildkit/
           sudo chown -R $(whoami) /tmp/buildkit
+          du -sh /tmp/buildkit
           
