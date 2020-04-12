@@ -17,6 +17,8 @@ COPY project /src/project
 RUN --mount=type=cache,target=/root/.ivy2 \
     --mount=type=cache,target=/root/.m2 \
     --mount=type=cache,target=/root/.sbt \
+    du -sh /root/.ivy2 /root/.sbt && \
+    ls /root/.ivy2 /root/.sbt && \
     ./sbt update
 
 # environemnt variables
