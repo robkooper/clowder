@@ -115,3 +115,5 @@ jobs:
           echo "$(whoami) $(id -ng)"
           sudo rsync -av --delete /var/lib/docker/buildkit/ ~/buildkit/
           sudo chown -R $(whoami) ~/buildkit
+          du -sh ~/buildkit
+
