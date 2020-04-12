@@ -56,7 +56,7 @@ jobs:
           ls -al /home/runner/work
           ls -al /home/runner/work/clowder
           ls -al /home/runner/work/clowder/clowder
-          ls -al /home/runner/work/clowder/clowder/root
+          ls -al /tmp
       - name: Build image
         run: |
           export DOCKER_BUILDKIT=1
