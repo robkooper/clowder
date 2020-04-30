@@ -42,9 +42,6 @@ jobs:
       - uses: actions/checkout@v2
       - name: Build image
         run: |
-          export DOCKER_BUILDKIT=1
-          echo ${HOME}
-          docker --version
           docker build \
             --build-arg BRANCH=${{ github.ref }} \
             --build-arg VERSION=${{ github.run_number }} \

@@ -1,4 +1,3 @@
-# syntax=docker/dockerfile:1.0-experimental
 # ----------------------------------------------------------------------
 # BUILD CLOWDER DIST
 # ----------------------------------------------------------------------
@@ -14,11 +13,7 @@ WORKDIR /src
 # install clowder libraries (hopefully cached)
 COPY sbt* /src/
 COPY project /src/project
-#RUN --mount=type=bind,source=${HOME}/.ivy2,target=/root/.ivy2,readwrite \
-#    --mount=type=bind,source=${HOME}/.m2,target=/root/.m2,readwrite \
-#    --mount=type=bind,source=${HOME}/.sbt,target=/root/.sbt,readwrite \
-RUN \
-    ./sbt update
+RUN ./sbt update
 
 # environemnt variables
 ENV BRANCH=${BRANCH} \
@@ -31,12 +26,7 @@ COPY lib /src/lib/
 COPY conf /src/conf/
 COPY public /src/public/
 COPY app /src/app/
-#RUN --mount=type=bind,source=${HOME}/.ivy2,target=/root/.ivy2,readwrite \
-#    --mount=type=bind,source=${HOME}/.m2,target=/root/.m2,readwrite \
-#    --mount=type=bind,source=${HOME}/.sbt,target=/root/.sbt,readwrite \
-#    --mount=type=bind,source=${PWD}/target,target=/src/target \
-RUN \
-    rm -rf target/universal/clowder-*.zip clowder clowder-* \
+RUN rm -rf target/universal/clowder-*.zip clowder clowder-* \
     && ./sbt dist \
     && ls -l target/universal/ \
     && unzip -q target/universal/clowder-*.zip \
