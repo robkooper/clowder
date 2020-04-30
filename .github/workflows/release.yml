@@ -11,6 +11,7 @@ on:
 
 jobs:
   docker:
+    #if: github.repository == 'clowder-framework/clowder'
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -107,10 +108,10 @@ jobs:
           # push all images
           for T in $TAGS; do
             docker tag image $IMAGE_ID:$T
-            docker push $IMAGE_ID:$T
+            #docker push $IMAGE_ID:$T
             if [ -n "${{ secrets.DOCKERHUB_USERNAME }}" -a -n "${{ secrets.DOCKERHUB_PASSWORD }}" ]; then
               docker tag image clowder/${{ matrix.IMAGE }}:$T
-              docker push clowder/${{ matrix.IMAGE }}:$T
+              #docker push clowder/${{ matrix.IMAGE }}:$T
             fi
           done
           
