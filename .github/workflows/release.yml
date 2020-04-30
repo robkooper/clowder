@@ -39,24 +39,6 @@ jobs:
             IMAGE: check
     steps:
       - uses: actions/checkout@v2
-      - uses: actions/cache@v1
-        with:
-          path: ~/.m2
-          key: clowder-${{ matrix.name }}-m2-${{ hashFiles('project/Build.scala') }}
-          restore-keys: |
-            ${{ runner.os }}-${{ matrix.name }}-
-      - uses: actions/cache@v1
-        with:
-          path: ~/.ivy
-          key: clowder-${{ matrix.name }}-ivy-${{ hashFiles('project/Build.scala') }}
-          restore-keys: |
-            ${{ runner.os }}-${{ matrix.name }}-
-      - uses: actions/cache@v1
-        with:
-          path: ~/.sbt
-          key: clowder-${{ matrix.name }}-sbt-${{ hashFiles('project/Build.scala') }}
-          restore-keys: |
-            ${{ runner.os }}-${{ matrix.name }}-
       - name: Build image
         run: |
           export DOCKER_BUILDKIT=1
