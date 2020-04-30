@@ -43,6 +43,7 @@ jobs:
       - name: Build image
         run: |
           export DOCKER_BUILDKIT=1
+          echo ${HOME}
           docker build \
             --build-arg BRANCH=${{ github.ref }} \
             --build-arg VERSION=${{ github.run_number }} \
