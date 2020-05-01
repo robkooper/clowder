@@ -109,7 +109,11 @@ jobs:
         run: |
           cd doc/src/sphinx/
           python -m pip install -r requirements.txt
-          make html
+          make html singlehtml latexpdf
+      - uses: actions/upload-artifact@v2
+        with:
+          name: documentation
+          path: doc/src/sphinx/_build/
 
   docker:
     runs-on: ubuntu-latest
