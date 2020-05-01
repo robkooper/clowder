@@ -116,8 +116,16 @@ jobs:
           make html singlehtml epub
       - uses: actions/upload-artifact@v2
         with:
-          name: documentation
-          path: doc/src/sphinx/_build/
+          name: HTML Documentation (multiple files)
+          path: doc/src/sphinx/_build/html
+      - uses: actions/upload-artifact@v2
+        with:
+          name: HTML Documentation (single file)
+          path: doc/src/sphinx/_build/singlehtml/index.html
+      - uses: actions/upload-artifact@v2
+        with:
+          name: EPUB Documentation
+          path: doc/src/sphinx/_build/epub/Clowder.epub
 
   docker:
     runs-on: ubuntu-latest

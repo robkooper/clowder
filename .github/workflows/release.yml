@@ -57,10 +57,11 @@ jobs:
           GITSHA1: ${{ github.sha  }}
         with:
           name: kooper/${{ matrix.IMAGE }}
-          username: ${{ secrets.DOCKER_USERNAME }}
-          password: ${{ secrets.DOCKER_PASSWORD }}
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_PASSWORD }}
           context: ${{ matrix.FOLDER }}
           tag_semver: true
+          buildargs: BRANCH,VERSION,BUILDNUMBER,GITSHA1
       - name: Publish to GitHub
         uses: elgohr/Publish-Docker-Github-Action@master
         env:
@@ -75,6 +76,7 @@ jobs:
           context: ${{ matrix.FOLDER }}
           tag_semver: true
           registry: docker.pkg.github.com
+          buildargs: BRANCH,VERSION,BUILDNUMBER,GITSHA1
       # - name: Login into registry
       #   run: |
       #     echo "${{ secrets.GITHUB_TOKEN }}" | docker login docker.pkg.github.com -u ${{ github.actor }} --password-stdin
