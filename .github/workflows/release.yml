@@ -10,7 +10,7 @@ on:
       - '*'
 
 jobs:
-  docker:
+  release:
     # if: github.repository == 'clowder-framework/clowder'
     runs-on: ubuntu-latest
     strategy:
@@ -62,21 +62,21 @@ jobs:
           context: ${{ matrix.FOLDER }}
           tag_semver: true
           buildargs: BRANCH,VERSION,BUILDNUMBER,GITSHA1
-      # - name: Publish to GitHub
-      #   uses: elgohr/Publish-Docker-Github-Action@master
-      #   env:
-      #     BRANCH: ${{ github.ref }}
-      #     VERSION: ${{ github.run_number }}
-      #     BUILDNUMBER: ${{ github.run_number }}
-      #     GITSHA1: ${{ github.sha  }}
-      #   with:
-      #     name: robkooper/clowder/${{ matrix.IMAGE }}
-      #     username: ${{ github.actor }}
-      #     password: ${{ secrets.GITHUB_TOKEN }}
-      #     context: ${{ matrix.FOLDER }}
-      #     tag_semver: true
-      #     registry: docker.pkg.github.com
-      #     buildargs: BRANCH,VERSION,BUILDNUMBER,GITSHA1
+      - name: Publish to GitHub
+        uses: elgohr/Publish-Docker-Github-Action@master
+        env:
+          BRANCH: ${{ github.ref }}
+          VERSION: ${{ github.run_number }}
+          BUILDNUMBER: ${{ github.run_number }}
+          GITSHA1: ${{ github.sha  }}
+        with:
+          name: robkooper/clowder/${{ matrix.IMAGE }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+          context: ${{ matrix.FOLDER }}
+          tag_semver: true
+          registry: docker.pkg.github.com
+          buildargs: BRANCH,VERSION,BUILDNUMBER,GITSHA1
       # - name: Login into registry
       #   run: |
       #     echo "${{ secrets.GITHUB_TOKEN }}" | docker login docker.pkg.github.com -u ${{ github.actor }} --password-stdin

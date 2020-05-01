@@ -1,4 +1,3 @@
-# syntax=docker/dockerfile:1.0-experimental
 # ----------------------------------------------------------------------
 # BUILD CLOWDER DIST
 # ----------------------------------------------------------------------
@@ -14,9 +13,7 @@ WORKDIR /src
 # install clowder libraries (hopefully cached)
 COPY sbt* /src/
 COPY project /src/project
-RUN --mount=type=cache,target=/root/.ivy2 \
-    --mount=type=cache,target=/root/.sbt \
-    ./sbt update
+RUN ./sbt update
 
 # environemnt variables
 ENV BRANCH=${BRANCH} \
@@ -29,9 +26,7 @@ COPY lib /src/lib/
 COPY conf /src/conf/
 COPY public /src/public/
 COPY app /src/app/
-RUN --mount=type=cache,target=/root/.ivy2 \
-    --mount=type=cache,target=/root/.sbt \
-    rm -rf target/universal/clowder-*.zip clowder clowder-* \
+RUN rm -rf target/universal/clowder-*.zip clowder clowder-* \
     && ./sbt dist \
     && ls -l target/universal/ \
     && unzip -q target/universal/clowder-*.zip \

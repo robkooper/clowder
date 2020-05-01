@@ -109,6 +109,10 @@ jobs:
           python-version: 3.7
       - name: sbt doc
         run: ./sbt doc
+      - uses: actions/upload-artifact@v2
+        with:
+          name: ScalaDoc
+          path: target/scala-*/api/
       - name: sphinx
         run: |
           cd doc/src/sphinx/
@@ -125,9 +129,6 @@ jobs:
 
   docker:        
     runs-on: ubuntu-latest
-    needs: build
-    # make sure we have recent version of Docker
-    #container: docker:19.03.8
     strategy:
       fail-fast: true
       matrix:
@@ -155,23 +156,9 @@ jobs:
             IMAGE: check
     steps:
       - uses: actions/checkout@v2
-      - name: Cache SBT ivy cache
-        uses: actions/cache@v1
-        with:
-          path: ~/.ivy2/cache
-          key: ${{ runner.os }}-sbt-ivy-cache-${{ hashFiles('**/build.sbt') }}
-      - name: Cache SBT
-        uses: actions/cache@v1
-        with:
-          path: ~/.sbt
-          key: ${{ runner.os }}-sbt-${{ hashFiles('**/build.sbt') }}
-      - uses: crazy-max/ghaction-docker-buildx@v1
-        with:
-          buildx-version: latest
-          qemu-version: latest
       - name: Build image
         run: |
-          docker buildx build \
+          docker build \
             --build-arg BRANCH=${{ github.ref }} \
             --build-arg VERSION=${{ github.run_number }} \
             --build-arg BUILDNUMBER=${{ github.run_number }} \
