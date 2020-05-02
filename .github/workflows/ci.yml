@@ -64,6 +64,11 @@ jobs:
           key: ${{ runner.os }}-sbt-${{ hashFiles('**/build.sbt') }}
       - name: sbt test
         run: ./sbt "test-only integration.APITestSuite"
+      - uses: ashley-taylor/junit-report-annotations-action@v1.0
+            if: always()
+            with:
+              access-token: ${{ secrets.GITHUB_TOKEN }}
+              path: 'target/scalatest-reports/*.xml'
 
   dist:
     runs-on: ubuntu-latest
