@@ -63,7 +63,7 @@ jobs:
           path: ~/.sbt
           key: ${{ runner.os }}-sbt-${{ hashFiles('**/build.sbt') }}
       - name: sbt test
-        run: sbt test-only integration.APITestSuite
+        run: ./sbt "test-only integration.APITestSuite"
 
   dist:
     runs-on: ubuntu-latest
