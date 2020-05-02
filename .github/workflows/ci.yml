@@ -33,6 +33,8 @@ jobs:
         with:
           path: ~/.sbt
           key: ${{ runner.os }}-sbt-${{ hashFiles('**/build.sbt') }}
+      - name: print env
+        run: env
       - name: sbt clean update
         run: ./sbt clean update
       - name: sbt compile
