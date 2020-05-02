@@ -42,10 +42,6 @@ jobs:
     services:
       mongodb:
         image: mongo:3.6
-        options: |
-          --health-cmd "echo 'db.runCommand(\"ping\").ok' | mongo localhost:27017/test --quiet"
-          --health-timeout 5s
-          --health-interval 5s
         ports:
           - 27017:27017
     steps:
