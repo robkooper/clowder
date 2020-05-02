@@ -1,12 +1,14 @@
 name: CI
 
 on:
+  release:
+    types: published
+
   push:
     branches:
       - master
       - develop
       - '*'
-
     tags:
       - '*'
 
@@ -64,11 +66,6 @@ jobs:
           key: ${{ runner.os }}-sbt-${{ hashFiles('**/build.sbt') }}
       - name: sbt test
         run: ./sbt "test-only integration.APITestSuite"
-      - uses: ashley-taylor/junit-report-annotations-action@v1.0
-        if: always()
-        with:
-          access-token: ${{ secrets.GITHUB_TOKEN }}
-          path: 'target/scalatest-reports/*.xml'
 
   dist:
     runs-on: ubuntu-latest
@@ -94,6 +91,13 @@ jobs:
         with:
           name: clowder.zip
           path: target/universal/clowder-*.zip
+      - name: Upload to release
+        if: github.event_name == 'release' && github.event.action == 'published'
+        uses: JasonEtco/upload-to-release@master
+        with:
+          args: target/universal/clowder-*.zip
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   documentation:
     runs-on: ubuntu-latest
@@ -136,6 +140,13 @@ jobs:
         with:
           name: EPUB Documentation
           path: doc/src/sphinx/_build/epub/Clowder.epub
+      - name: Upload to release
+        if: github.event_name == 'release' && github.event.action == 'published'
+        uses: JasonEtco/upload-to-release@master
+        with:
+          args: doc/src/sphinx/_build/epub/Clowder.epub
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   docker:        
     runs-on: ubuntu-latest
