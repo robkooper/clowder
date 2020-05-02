@@ -39,6 +39,15 @@ jobs:
   test:
     runs-on: ubuntu-latest
     needs: build
+    services:
+      mongodb:
+        image: mongo:3.6
+        options: |
+          --health-cmd "echo 'db.runCommand(\"ping\").ok' | mongo localhost:27017/test --quiet"
+          --health-timeout 5s
+          --health-interval 5s
+        ports:
+          - 27017:27017
     steps:
       - uses: actions/setup-java@v1
         with:
@@ -58,7 +67,7 @@ jobs:
           path: ~/.sbt
           key: ${{ runner.os }}-sbt-${{ hashFiles('**/build.sbt') }}
       - name: sbt test
-        run: echo "test-only integration.APITestSuite"
+        run: sbt test-only integration.APITestSuite
 
   dist:
     runs-on: ubuntu-latest
