@@ -1,18 +1,18 @@
 name: CI
 
-on:
-  release:
-    types: published
+# on:
+#   release:
+#     types: published
 
-  push:
-    branches:
-      - master
-      - develop
-      - '*'
-    tags:
-      - '*'
+#   push:
+#     branches:
+#       - master
+#       - develop
+#       - '*'
+#     tags:
+#       - '*'
 
-  pull_request:
+#   pull_request:
 
 jobs:
 
