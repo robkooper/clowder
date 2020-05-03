@@ -1,18 +1,18 @@
 name: CI
 
-# on:
-#   release:
-#     types: published
+on:
+  release:
+    types: created
 
-#   push:
-#     branches:
-#       - master
-#       - develop
-#       - '*'
-#     tags:
-#       - '*'
+  push:
+    branches:
+      - master
+      - develop
+      - '*'
+    tags:
+      - '*'
 
-#   pull_request:
+  pull_request:
 
 jobs:
 
@@ -93,18 +93,15 @@ jobs:
         with:
           name: clowder.zip
           path: target/universal/clowder-*.zip
-      - name: find zip zipfile
-        if: github.event_name == 'release' && github.event.action == 'published'
-        id: distfile
-        run: |
-          echo "##[set-output name=zipfile;]$(/bin/ls -1rt target/universal/clowder-*.zip | tail -1)"
-      - name: Upload to release
-        if: github.event_name == 'release' && github.event.action == 'published'
-        uses: JasonEtco/upload-to-release@master
+      - name: Upload files to a GitHub release
+        uses: svenstaro/upload-release-action@1.0.1
+        if: github.event_name == 'release' && github.event.action == 'created'
         with:
-          args: ${{ steps.distfile.outputs.zipfile }}
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          tag: ${{ github.ref }}
+          overwrite: true
+          asset_name: clowder.zip
+          file_glob: target/universal/clowder-*.zip
 
   documentation:
     runs-on: ubuntu-latest
@@ -147,12 +144,15 @@ jobs:
         with:
           name: EPUB Documentation
           path: doc/src/sphinx/_build/epub/Clowder.epub
-      - name: Upload to release
-        uses: JasonEtco/upload-to-release@master
+      - name: Upload files to a GitHub release
+        uses: svenstaro/upload-release-action@1.0.1
+        if: github.event_name == 'release' && github.event.action == 'created'
         with:
-          args: doc/src/sphinx/_build/epub/Clowder.epub
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          tag: ${{ github.ref }}
+          overwrite: true
+          asset_name: clowder.epub
+          file: doc/src/sphinx/_build/epub/Clowder.epub
 
   docker:        
     runs-on: ubuntu-latest

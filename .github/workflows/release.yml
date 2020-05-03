@@ -1,12 +1,12 @@
 name: Release
 
-# on:
-#   push:
-#     branches:
-#       - master
-#       - develop
-#     tags:
-#       - '*'
+on:
+  push:
+    branches:
+      - master
+      - develop
+    tags:
+      - '*'
 
 # TODO check on release and https://github.com/marketplace/actions/upload-to-release
 
