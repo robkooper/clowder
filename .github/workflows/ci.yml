@@ -9,8 +9,6 @@ on:
       - master
       - develop
       - '*'
-    tags:
-      - '*'
 
   pull_request:
 
@@ -101,7 +99,8 @@ jobs:
           tag: ${{ github.ref }}
           overwrite: true
           asset_name: clowder.zip
-          file_glob: target/universal/clowder-*.zip
+          file: target/universal/clowder-*.zip
+          file_glob: true
 
   documentation:
     runs-on: ubuntu-latest
