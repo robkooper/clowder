@@ -50,33 +50,33 @@ jobs:
             IMAGE: check
             README: ""
     steps:
-      - uses: actions/checkout@v2
-      - name: Build image
-        run: |
-          docker build \
-            --build-arg BRANCH=${{ github.ref }} \
-            --build-arg VERSION=${{ github.run_number }} \
-            --build-arg BUILDNUMBER=${{ github.run_number }} \
-            --build-arg GITSHA1=${{ github.sha  }} \
-            --tag image ${{ matrix.FOLDER }}
+      # - uses: actions/checkout@v2
+      # - name: Build image
+      #   run: |
+      #     docker build \
+      #       --build-arg BRANCH=${{ github.ref }} \
+      #       --build-arg VERSION=${{ github.run_number }} \
+      #       --build-arg BUILDNUMBER=${{ github.run_number }} \
+      #       --build-arg GITSHA1=${{ github.sha  }} \
+      #       --tag image ${{ matrix.FOLDER }}
 
-      - name: Publish to Docker Hub
-        #if: github.event_name != 'pull_request' && github.repository == 'clowder-framework/clowder'
-        if: github.event_name != 'pull_request' && github.repository == ${{ env.MASTER_REPO }}
-        uses: elgohr/Publish-Docker-Github-Action@2.14
-        env:
-          BRANCH: ${{ github.ref }}
-          VERSION: ${{ github.run_number }}
-          BUILDNUMBER: ${{ github.run_number }}
-          GITSHA1: ${{ github.sha  }}
-        with:
-          name: ${{ env.DOCKERHUB_ORG }}/${{ matrix.IMAGE }}
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_PASSWORD }}
-          context: ${{ matrix.FOLDER }}
-          tag_semver: true
-          tag_names: true
-          buildargs: BRANCH,VERSION,BUILDNUMBER,GITSHA1
+      # - name: Publish to Docker Hub
+      #   #if: github.event_name != 'pull_request' && github.repository == 'clowder-framework/clowder'
+      #   if: github.event_name != 'pull_request' && github.repository == ${{ env.MASTER_REPO }}
+      #   uses: elgohr/Publish-Docker-Github-Action@2.14
+      #   env:
+      #     BRANCH: ${{ github.ref }}
+      #     VERSION: ${{ github.run_number }}
+      #     BUILDNUMBER: ${{ github.run_number }}
+      #     GITSHA1: ${{ github.sha  }}
+      #   with:
+      #     name: ${{ env.DOCKERHUB_ORG }}/${{ matrix.IMAGE }}
+      #     username: ${{ secrets.DOCKERHUB_USERNAME }}
+      #     password: ${{ secrets.DOCKERHUB_PASSWORD }}
+      #     context: ${{ matrix.FOLDER }}
+      #     tag_semver: true
+      #     tag_names: true
+      #     buildargs: BRANCH,VERSION,BUILDNUMBER,GITSHA1
 
       - name: check file
         id: filecheck
@@ -87,8 +87,7 @@ jobs:
             echo "##[set-output name=exists;]false"
           fi
       - name: Docker Hub Description
-        if: ${{ matrix.README }} != ''
-        # && github.event_name != ${{ 'pull_request' }} && github.repository == ${{ env.MASTER_REPO }}
+        if: steps.filecheck.outputs.exists == true && github.event_name != 'pull_request' && github.repository == env.MASTER_REPO
         uses: peter-evans/dockerhub-description@v2
         env:
           DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
@@ -96,20 +95,20 @@ jobs:
           DOCKERHUB_REPOSITORY: ${{ env.DOCKERHUB_ORG }}/${{ matrix.IMAGE }}
           README_FILEPATH: ${{ matrix.README }}
 
-      - name: Publish to GitHub
-        if: github.event_name != 'pull_request'
-        uses: elgohr/Publish-Docker-Github-Action@2.14
-        env:
-          BRANCH: ${{ github.ref }}
-          VERSION: ${{ github.run_number }}
-          BUILDNUMBER: ${{ github.run_number }}
-          GITSHA1: ${{ github.sha  }}
-        with:
-          name: ${{ github.actor }}/clowder/${{ matrix.IMAGE }}
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-          context: ${{ matrix.FOLDER }}
-          tag_semver: true
-          tag_names: true
-          registry: docker.pkg.github.com
-          buildargs: BRANCH,VERSION,BUILDNUMBER,GITSHA1
+      # - name: Publish to GitHub
+      #   if: github.event_name != 'pull_request'
+      #   uses: elgohr/Publish-Docker-Github-Action@2.14
+      #   env:
+      #     BRANCH: ${{ github.ref }}
+      #     VERSION: ${{ github.run_number }}
+      #     BUILDNUMBER: ${{ github.run_number }}
+      #     GITSHA1: ${{ github.sha  }}
+      #   with:
+      #     name: ${{ github.actor }}/clowder/${{ matrix.IMAGE }}
+      #     username: ${{ github.actor }}
+      #     password: ${{ secrets.GITHUB_TOKEN }}
+      #     context: ${{ matrix.FOLDER }}
+      #     tag_semver: true
+      #     tag_names: true
+      #     registry: docker.pkg.github.com
+      #     buildargs: BRANCH,VERSION,BUILDNUMBER,GITSHA1
