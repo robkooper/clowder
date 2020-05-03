@@ -1,5 +1,12 @@
 name: CI
 
+# This will run when:
+# - a new release is created, and will attach the generated
+#   artifacts to the release
+# - when new code is pushed to master/develop to make sure the
+#   code does compile.
+# - when a pull request is created and updated to make sure the
+#   code does compile.
 on:
   release:
     types: created
@@ -8,12 +15,18 @@ on:
     branches:
       - master
       - develop
-      # - '*'
 
   pull_request:
 
+# The jobs are chained, the first thing that is run is the code to
+# update all the dependencies (which are cached). The cache is
+# linked to the project/Build.scala file, if this changes the cache
+# is invalidated.
+# Once build is done it will start the test, dist and documentation
+# phases (which are executed in parallel).
 jobs:
 
+  # downloads all the dependencies and compiles the scala code
   build:
     runs-on: ubuntu-latest
     steps:
@@ -25,19 +38,18 @@ jobs:
         uses: actions/cache@v1
         with:
           path: ~/.ivy2/cache
-          key: ${{ runner.os }}-sbt-ivy-cache-${{ hashFiles('**/build.sbt') }}
+          key: ${{ runner.os }}-sbt-ivy-cache-${{ hashFiles('project/Build.scala') }}
       - name: Cache SBT
         uses: actions/cache@v1
         with:
           path: ~/.sbt
-          key: ${{ runner.os }}-sbt-${{ hashFiles('**/build.sbt') }}
-      - name: print env
-        run: env
+          key: ${{ runner.os }}-sbt-${{ hashFiles('project/Build.scala') }}
       - name: sbt clean update
         run: ./sbt clean update
       - name: sbt compile
         run: ./sbt compile
 
+  # starts a mongodb instance, and runs the scala tests
   test:
     runs-on: ubuntu-latest
     needs: build
@@ -58,15 +70,18 @@ jobs:
         uses: actions/cache@v1
         with:
           path: ~/.ivy2/cache
-          key: ${{ runner.os }}-sbt-ivy-cache-${{ hashFiles('**/build.sbt') }}
+          key: ${{ runner.os }}-sbt-ivy-cache-${{ hashFiles('project/Build.scala') }}
       - name: Cache SBT
         uses: actions/cache@v1
         with:
           path: ~/.sbt
-          key: ${{ runner.os }}-sbt-${{ hashFiles('**/build.sbt') }}
+          key: ${{ runner.os }}-sbt-${{ hashFiles('project/Build.scala') }}
       - name: sbt test
         run: ./sbt "test-only integration.APITestSuite"
 
+  # creates zip file of the dist compiled version. The results are
+  # uploaded as artifacts for this build as well to the release if
+  # created.
   dist:
     runs-on: ubuntu-latest
     needs: build
@@ -79,12 +94,12 @@ jobs:
         uses: actions/cache@v1
         with:
           path: ~/.ivy2/cache
-          key: ${{ runner.os }}-sbt-ivy-cache-${{ hashFiles('**/build.sbt') }}
+          key: ${{ runner.os }}-sbt-ivy-cache-${{ hashFiles('project/Build.scala') }}
       - name: Cache SBT
         uses: actions/cache@v1
         with:
           path: ~/.sbt
-          key: ${{ runner.os }}-sbt-${{ hashFiles('**/build.sbt') }}
+          key: ${{ runner.os }}-sbt-${{ hashFiles('project/Build.scala') }}
       - name: sbt dist
         run: ./sbt dist
       - uses: actions/upload-artifact@v2
@@ -102,6 +117,8 @@ jobs:
           file: target/universal/clowder-*.zip
           file_glob: true
 
+  # creates scaladoc, html and epub (no pdflatex) and uploads those
+  # as artifacts for this build as well to the release if created.
   documentation:
     runs-on: ubuntu-latest
     needs: build
@@ -114,12 +131,12 @@ jobs:
         uses: actions/cache@v1
         with:
           path: ~/.ivy2/cache
-          key: ${{ runner.os }}-sbt-ivy-cache-${{ hashFiles('**/build.sbt') }}
+          key: ${{ runner.os }}-sbt-ivy-cache-${{ hashFiles('project/Build.scala') }}
       - name: Cache SBT
         uses: actions/cache@v1
         with:
           path: ~/.sbt
-          key: ${{ runner.os }}-sbt-${{ hashFiles('**/build.sbt') }}
+          key: ${{ runner.os }}-sbt-${{ hashFiles('project/Build.scala') }}
       - name: Set up Python 3.7
         uses: actions/setup-python@v1
         with:
