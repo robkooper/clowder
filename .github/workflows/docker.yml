@@ -79,7 +79,7 @@ jobs:
           buildargs: BRANCH,VERSION,BUILDNUMBER,GITSHA1
 
       - name: Docker Hub Description
-        if: ${{ matrix.README }} != '' && github.event_name != 'pull_request' && github.repository == ${{ env.MASTER_REPO }}
+        if: ${{ matrix.README }} && github.event_name != 'pull_request' && github.repository == ${{ env.MASTER_REPO }}
         uses: peter-evans/dockerhub-description@v2
         env:
           DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
