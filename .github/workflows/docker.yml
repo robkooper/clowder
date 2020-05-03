@@ -81,9 +81,9 @@ jobs:
       - name: check file
         id: filecheck
         run: |
-          env
+          env | sort
           if [ "${{ matrix.README }}" != "" -a -e "${{ matrix.README }}" -a
-               "$GITHUB_EVENTNAME" != "pull_request" -a "$GITHUB_REPO" != "${{ env.MASTER_REPO }}" ]; then
+               "$GITHUB_EVENT_NAME" != "pull_request" -a "$GITHUB_REPOSITORY" != "$MASTER_REPO" ]; then
             echo "##[set-output name=exists;]true"  
           else
             echo "##[set-output name=exists;]false"
