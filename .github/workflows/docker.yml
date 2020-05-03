@@ -81,20 +81,11 @@ jobs:
       - name: check file
         id: filecheck
         run: |
-          env | sort
-
-          RESULT="false"
-          # if [ "$GITHUB_REPOSITORY" == "$MASTER_REPO" ]; then
-          #   echo 1
-          #   if [ "$GITHUB_EVENT_NAME" != "pull_request" ]; then
-          #     echo 2
-              if [ "${{ matrix.README }}" != "" -a -e "${{ matrix.README }}" ]; then
-                echo 3
-                RESULT="true"
-              fi
-          #   fi
-          # fi
-          echo "##[set-output name=exists;]${RESULT}"  
+          if [ "${{ matrix.README }}" != "" -a -e "${{ matrix.README }}" ]; then
+            echo "##[set-output name=exists;]true"
+          else
+            echo "##[set-output name=exists;]false"
+          fi
       - name: Docker Hub Description
         if: steps.filecheck.outputs.exists == 'true' && github.event_name != 'pull_request' && github.repository == env.MASTER_REPO
         run: |
