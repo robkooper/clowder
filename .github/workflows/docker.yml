@@ -86,16 +86,20 @@ jobs:
           else
             echo "##[set-output name=exists;]false"
           fi
-          echo ${{ github.event_name }}
-          echo ${{ github.repository }}
       - name: Docker Hub Description
         if: steps.filecheck.outputs.exists == true && github.event_name != 'pull_request' && github.repository == env.MASTER_REPO
-        uses: peter-evans/dockerhub-description@v2
-        env:
-          DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
-          DOCKERHUB_PASSWORD: ${{ secrets.DOCKERHUB_PASSWORD }}
-          DOCKERHUB_REPOSITORY: ${{ env.DOCKERHUB_ORG }}/${{ matrix.IMAGE }}
-          README_FILEPATH: ${{ matrix.README }}
+        run: |
+          echo ${{ steps.filecheck.outputs.exists }}
+          echo ${{ github.event_name }}
+          echo ${{ github.repository }}
+          echo ${{ env.MASTER_REPO }}
+
+        # uses: peter-evans/dockerhub-description@v2
+        # env:
+        #   DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+        #   DOCKERHUB_PASSWORD: ${{ secrets.DOCKERHUB_PASSWORD }}
+        #   DOCKERHUB_REPOSITORY: ${{ env.DOCKERHUB_ORG }}/${{ matrix.IMAGE }}
+        #   README_FILEPATH: ${{ matrix.README }}
 
       # - name: Publish to GitHub
       #   if: github.event_name != 'pull_request'
