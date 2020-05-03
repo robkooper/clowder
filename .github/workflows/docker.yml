@@ -1,22 +1,20 @@
-name: Release
+name: CI
 
 on:
   release:
     types: created
-    branches:
-      - master
-      - develop      
 
   push:
     branches:
       - master
       - develop
+      - '*'
 
-# TODO check on release and https://github.com/marketplace/actions/upload-to-release
+  pull_request:
 
 jobs:
-  release:
-    if: github.repository == 'clowder-framework/clowder'
+
+  docker:        
     runs-on: ubuntu-latest
     strategy:
       fail-fast: true
@@ -45,8 +43,19 @@ jobs:
             IMAGE: check
     steps:
       - uses: actions/checkout@v2
+      - name: Build image
+        run: |
+          docker build \
+            --build-arg BRANCH=${{ github.ref }} \
+            --build-arg VERSION=${{ github.run_number }} \
+            --build-arg BUILDNUMBER=${{ github.run_number }} \
+            --build-arg GITSHA1=${{ github.sha  }} \
+            --tag image ${{ matrix.FOLDER }}
+
       - name: Publish to Docker Hub
-        uses: elgohr/Publish-Docker-Github-Action@master
+        #if: github.event_name != 'pull_request' && github.repository == 'clowder-framework/clowder'
+        if: github.event_name != 'pull_request' && github.repository == 'robkooper/clowder'
+        uses: elgohr/Publish-Docker-Github-Action@2.14
         env:
           BRANCH: ${{ github.ref }}
           VERSION: ${{ github.run_number }}
@@ -58,9 +67,12 @@ jobs:
           password: ${{ secrets.DOCKERHUB_PASSWORD }}
           context: ${{ matrix.FOLDER }}
           tag_semver: true
+          tag_names: true
           buildargs: BRANCH,VERSION,BUILDNUMBER,GITSHA1
+
       - name: Publish to GitHub
-        uses: elgohr/Publish-Docker-Github-Action@master
+        if: github.event_name != 'pull_request'
+        uses: elgohr/Publish-Docker-Github-Action@2.14
         env:
           BRANCH: ${{ github.ref }}
           VERSION: ${{ github.run_number }}
@@ -72,6 +84,6 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
           context: ${{ matrix.FOLDER }}
           tag_semver: true
+          tag_names: true
           registry: docker.pkg.github.com
           buildargs: BRANCH,VERSION,BUILDNUMBER,GITSHA1
-

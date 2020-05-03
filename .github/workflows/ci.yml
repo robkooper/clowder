@@ -100,7 +100,7 @@ jobs:
           overwrite: true
           asset_name: clowder.zip
           file: target/universal/clowder-*.zip
-          file_glob: true
+          file_glob: "true"
 
   documentation:
     runs-on: ubuntu-latest
@@ -152,42 +152,3 @@ jobs:
           overwrite: true
           asset_name: clowder.epub
           file: doc/src/sphinx/_build/epub/Clowder.epub
-
-  docker:        
-    runs-on: ubuntu-latest
-    strategy:
-      fail-fast: true
-      matrix:
-        name:
-          - clowder
-          - toolserver
-          - mongo-init
-          - monitor
-          - check
-        include:
-          - name: clowder
-            FOLDER: "."
-            IMAGE: clowder
-          - name: toolserver
-            FOLDER: scripts/toollaunchservice
-            IMAGE: toolserver
-          - name: mongo-init
-            FOLDER: scripts/mongo-init
-            IMAGE: mongo-init
-          - name: monitor
-            FOLDER: scripts/monitor
-            IMAGE: monitor
-          - name: check
-            FOLDER: scripts/check
-            IMAGE: check
-    steps:
-      - uses: actions/checkout@v2
-      - name: Build image
-        run: |
-          docker build \
-            --build-arg BRANCH=${{ github.ref }} \
-            --build-arg VERSION=${{ github.run_number }} \
-            --build-arg BUILDNUMBER=${{ github.run_number }} \
-            --build-arg GITSHA1=${{ github.sha  }} \
-            --tag image ${{ matrix.FOLDER }}
-
