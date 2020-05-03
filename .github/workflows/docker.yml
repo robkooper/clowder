@@ -87,7 +87,8 @@ jobs:
             echo "##[set-output name=exists;]false"
           fi
       - name: Docker Hub Description
-        if: steps.filecheck.outputs.exists == 'true' && github.event_name != ${{ 'pull_request' }} && github.repository == ${{ env.MASTER_REPO }}
+        if: steps.filecheck.outputs.exists == 'true'
+        # && github.event_name != ${{ 'pull_request' }} && github.repository == ${{ env.MASTER_REPO }}
         uses: peter-evans/dockerhub-description@v2
         env:
           DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
