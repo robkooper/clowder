@@ -12,10 +12,10 @@ on:
 
   pull_request:
 
-jobs:
-  env:
-    DOCKERHUB_ORG: kooper
+env:
+  DOCKERHUB_ORG: kooper
 
+jobs:
   docker:        
     runs-on: ubuntu-latest
     strategy:
