@@ -36,19 +36,19 @@ jobs:
           - name: toolserver
             FOLDER: scripts/toollaunchservice
             IMAGE: toolserver
-            README: false
+            README: ""
           - name: mongo-init
             FOLDER: scripts/mongo-init
             IMAGE: mongo-init
-            README: false
+            README: ""
           - name: monitor
             FOLDER: scripts/monitor
             IMAGE: monitor
-            README: false
+            README: ""
           - name: check
             FOLDER: scripts/check
             IMAGE: check
-            README: false
+            README: ""
     steps:
       - uses: actions/checkout@v2
       - name: Build image
@@ -79,7 +79,7 @@ jobs:
           buildargs: BRANCH,VERSION,BUILDNUMBER,GITSHA1
 
       - name: Docker Hub Description
-        if: ${{ matrix.README }} && github.event_name != ${{ 'pull_request' }} && github.repository == ${{ env.MASTER_REPO }}
+        if: ${{ matrix.README }} != ${{ '\'' }} && github.event_name != ${{ 'pull_request' }} && github.repository == ${{ env.MASTER_REPO }}
         uses: peter-evans/dockerhub-description@v2
         env:
           DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
