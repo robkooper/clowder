@@ -93,6 +93,12 @@ jobs:
           echo ${{ github.event_name }}
           echo ${{ github.repository }}
           echo ${{ env.MASTER_REPO }}
+      - name: Docker Hub Description
+        run: |
+          echo ${{ steps.filecheck.outputs.exists }}
+          echo ${{ github.event_name }}
+          echo ${{ github.repository }}
+          echo ${{ env.MASTER_REPO }}
 
         # uses: peter-evans/dockerhub-description@v2
         # env:
