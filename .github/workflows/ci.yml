@@ -15,6 +15,7 @@ on:
     branches:
       - master
       - develop
+      - '*'
 
   pull_request:
 
@@ -116,6 +117,16 @@ jobs:
           asset_name: clowder.zip
           file: target/universal/clowder-*.zip
           file_glob: true
+      - name: Upload dist to NCSA
+        if: github.event_name == 'push'
+        uses: appleboy/scp-action@master
+        with:
+          host: ${{ secrets.SCP_HOST }}
+          username: ${{ secrets.SCP_USERNAME }}
+          password: ${{ secrets.SCP_PASSWORD }}
+          strip_components: 2
+          source: "target/universal/clowder-*.zip"
+          target: "CATS/${GITHUB_REF##*/}/files"
 
   # creates scaladoc, html and epub (no pdflatex) and uploads those
   # as artifacts for this build as well to the release if created.
@@ -169,3 +180,33 @@ jobs:
           overwrite: true
           asset_name: clowder.epub
           file: doc/src/sphinx/_build/epub/Clowder.epub
+      - name: Upload epub to NCSA
+        if: github.event_name == 'push'
+        uses: appleboy/scp-action@master
+        with:
+          host: ${{ secrets.SCP_HOST }}
+          username: ${{ secrets.SCP_USERNAME }}
+          password: ${{ secrets.SCP_PASSWORD }}
+          strip_components: 5
+          source: "doc/src/sphinx/_build/epub/Clowder.epub"
+          target: "CATS/${GITHUB_REF##*/}/files"
+      - name: Upload sphinx to NCSA
+        if: github.event_name == 'push'
+        uses: appleboy/scp-action@master
+        with:
+          host: ${{ secrets.SCP_HOST }}
+          username: ${{ secrets.SCP_USERNAME }}
+          password: ${{ secrets.SCP_PASSWORD }}
+          strip_components: 3
+          source: "doc/src/sphinx/_build/html, "
+          target: "CATS/${GITHUB_REF##*/}/documentation/sphinx"
+      - name: Upload scaladoc to NCSA
+        if: github.event_name == 'push'
+        uses: appleboy/scp-action@master
+        with:
+          host: ${{ secrets.SCP_HOST }}
+          username: ${{ secrets.SCP_USERNAME }}
+          password: ${{ secrets.SCP_PASSWORD }}
+          strip_components: 3
+          source: "target/scala-*/api/"
+          target: "CATS/${GITHUB_REF##*/}/documentation/scaladoc"
