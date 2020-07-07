@@ -124,9 +124,9 @@ jobs:
           debug: true
           host: ${{ secrets.SCP_HOST }}
           username: ${{ secrets.SCP_USERNAME }}
-          password: ${{ secrets.SCP_PASSWORD }}
+          key: ${{ secrets.SCP_KEY }}
           source: "CHANGELOG.md"
-          target: "CATS"
+          target: "/CATS"
       - name: Upload dist to NCSA
         if: github.event_name == 'push'
         uses: appleboy/scp-action@master
@@ -134,7 +134,7 @@ jobs:
           debug: true
           host: ${{ secrets.SCP_HOST }}
           username: ${{ secrets.SCP_USERNAME }}
-          password: ${{ secrets.SCP_PASSWORD }}
+          key: ${{ secrets.SCP_KEY }}
           strip_components: 2
           source: "target/universal/clowder-*.zip"
           target: "CATS/${GITHUB_REF##*/}/files"
@@ -198,7 +198,7 @@ jobs:
           debug: true
           host: ${{ secrets.SCP_HOST }}
           username: ${{ secrets.SCP_USERNAME }}
-          password: ${{ secrets.SCP_PASSWORD }}
+          key: ${{ secrets.SCP_KEY }}
           strip_components: 5
           source: "doc/src/sphinx/_build/epub/Clowder.epub"
           target: "CATS/${GITHUB_REF##*/}/files"
@@ -209,7 +209,7 @@ jobs:
           debug: true
           host: ${{ secrets.SCP_HOST }}
           username: ${{ secrets.SCP_USERNAME }}
-          password: ${{ secrets.SCP_PASSWORD }}
+          key: ${{ secrets.SCP_KEY }}
           strip_components: 3
           source: "doc/src/sphinx/_build/html, "
           target: "CATS/${GITHUB_REF##*/}/documentation/sphinx"
@@ -220,7 +220,7 @@ jobs:
           debug: true
           host: ${{ secrets.SCP_HOST }}
           username: ${{ secrets.SCP_USERNAME }}
-          password: ${{ secrets.SCP_PASSWORD }}
+          key: ${{ secrets.SCP_KEY }}
           strip_components: 3
           source: "target/scala-*/api/"
           target: "CATS/${GITHUB_REF##*/}/documentation/scaladoc"
