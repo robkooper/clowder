@@ -17,11 +17,7 @@ object ApplicationBuild extends Build {
   val jvm = "1.7"
 
   def appVersion: String = {
-    if (gitBranchName == "master") {
-      getVersion
-    } else {
-      s"${getVersion}-SNAPSHOT"
-    }
+    getVersion
   }
 
   def exec(cmd: String): Seq[String] = {
@@ -138,6 +134,7 @@ object ApplicationBuild extends Build {
   val main = play.Project(appName, appVersion, appDependencies).settings(
     scalacOptions ++= Seq(s"-target:jvm-$jvm", "-feature"),
     javacOptions ++= Seq("-source", jvm, "-target", jvm),
+    ivyScala := ivyScala.value map { _.copy(overrideScalaVersion = true) },
     initialize := {
       val current  = sys.props("java.specification.version")
       assert(current >= "1.8", s"Unsupported JDK: java.specification.version $current != $jvm")
