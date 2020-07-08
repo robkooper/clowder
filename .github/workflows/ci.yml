@@ -15,7 +15,6 @@ on:
     branches:
       - master
       - develop
-      - '*'
 
   pull_request:
 
@@ -91,7 +90,6 @@ jobs:
       - name: github branch
         run: |
           BRANCH=${GITHUB_REF##*/}
-          echo ${BRANCH}
           #if [ "$BRANCH" == "master" ]; then
             echo "::set-env name=CLOWDER_VERSION::$(awk '/version = / { print $4 }' project/Build.scala | sed 's/"//g')"
           #elif [ "$BRANCH" == "develop" ]; then
@@ -136,7 +134,7 @@ jobs:
           username: ${{ secrets.SCP_USERNAME }}
           key: ${{ secrets.SCP_KEY }}
           files: "target/universal/clowder-*.zip"
-          target: "CATS/${{ env.GITHUB_BRANCH }}/files"
+          target: "CATS/${{ env.CLOWDER_VERSION }}/files"
 
   # creates scaladoc, html and epub (no pdflatex) and uploads those
   # as artifacts for this build as well to the release if created.
@@ -186,7 +184,7 @@ jobs:
           username: ${{ secrets.SCP_USERNAME }}
           key: ${{ secrets.SCP_KEY }}
           files: "target/scala-*/api/*"
-          target: "CATS/${{ env.GITHUB_BRANCH }}/documentation/scaladoc"
+          target: "CATS/${{ env.CLOWDER_VERSION }}/documentation/scaladoc"
       - name: sphinx
         run: |
           cd doc/src/sphinx/
@@ -204,7 +202,7 @@ jobs:
           username: ${{ secrets.SCP_USERNAME }}
           key: ${{ secrets.SCP_KEY }}
           files: "doc/src/sphinx/_build/html/*"
-          target: "CATS/${{ env.GITHUB_BRANCH }}/documentation/sphinx"
+          target: "CATS/${{ env.CLOWDER_VERSION }}/documentation/sphinx"
       - uses: actions/upload-artifact@v2
         with:
           name: EPUB Documentation
@@ -226,4 +224,4 @@ jobs:
           username: ${{ secrets.SCP_USERNAME }}
           key: ${{ secrets.SCP_KEY }}
           files: "doc/src/sphinx/_build/epub/Clowder.epub"
-          target: "CATS/${{ env.GITHUB_BRANCH }}/files"
+          target: "CATS/${{ env.CLOWDER_VERSION }}/files"
