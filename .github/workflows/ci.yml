@@ -89,7 +89,16 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: github branch
-        run: echo "::set-env name=GITHUB_BRANCH::${GITHUB_REF##*/}"
+        run: |
+          BRANCH=${GITHUB_REF##*/}
+          echo ${BRANCH}
+          #if [ "$BRANCH" == "master" ]; then
+            echo "::set-env name=CLOWDER_VERSION::$(awk '/version = / { print $4 }' project/Build.scala | sed 's/"//g')"
+          #elif [ "$BRANCH" == "develop" ]; then
+            echo "::set-env name=CLOWDER_VERSION::develop"
+          #else 
+            echo "::set-env name=CLOWDER_VERSION::testing"
+          #fi
       - uses: actions/setup-java@v1
         with:
           java-version: 1.8
@@ -137,7 +146,15 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: github branch
-        run: echo "::set-env name=GITHUB_BRANCH::${GITHUB_REF##*/}"
+        run: |
+          BRANCH=${GITHUB_REF##*/}
+          if [ "$BRANCH" == "master" ]; then
+            echo "::set-env name=CLOWDER_VERSION::$(awk '/version = / { print $4 }' project/Build.scala | sed 's/"//g')"
+          elif [ "$BRANCH" == "develop" ]; then
+            echo "::set-env name=CLOWDER_VERSION::develop"
+          else 
+            echo "::set-env name=CLOWDER_VERSION::testing"
+          fi
       - uses: actions/setup-java@v1
         with:
           java-version: 1.8
