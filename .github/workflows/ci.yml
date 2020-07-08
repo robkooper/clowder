@@ -117,26 +117,14 @@ jobs:
           asset_name: clowder.zip
           file: target/universal/clowder-*.zip
           file_glob: true
-      - name: Upload testfile to NCSA
-        if: github.event_name == 'push'
-        uses: appleboy/scp-action@master
-        with:
-          debug: true
-          host: ${{ secrets.SCP_HOST }}
-          username: ${{ secrets.SCP_USERNAME }}
-          key: ${{ secrets.SCP_KEY }}
-          source: "CHANGELOG.md"
-          target: "/CATS"
       - name: Upload dist to NCSA
         if: github.event_name == 'push'
-        uses: appleboy/scp-action@master
+        uses: robkooper/sftp-action@master
         with:
-          debug: true
           host: ${{ secrets.SCP_HOST }}
           username: ${{ secrets.SCP_USERNAME }}
           key: ${{ secrets.SCP_KEY }}
-          strip_components: 2
-          source: "target/universal/clowder-*.zip"
+          files: "target/universal/clowder-*.zip"
           target: "CATS/${GITHUB_REF##*/}/files"
 
   # creates scaladoc, html and epub (no pdflatex) and uploads those
@@ -193,34 +181,28 @@ jobs:
           file: doc/src/sphinx/_build/epub/Clowder.epub
       - name: Upload epub to NCSA
         if: github.event_name == 'push'
-        uses: appleboy/scp-action@master
+        uses: robkooper/sftp-action@master
         with:
-          debug: true
           host: ${{ secrets.SCP_HOST }}
           username: ${{ secrets.SCP_USERNAME }}
           key: ${{ secrets.SCP_KEY }}
-          strip_components: 5
-          source: "doc/src/sphinx/_build/epub/Clowder.epub"
+          files: "doc/src/sphinx/_build/epub/Clowder.epub"
           target: "CATS/${GITHUB_REF##*/}/files"
       - name: Upload sphinx to NCSA
         if: github.event_name == 'push'
-        uses: appleboy/scp-action@master
+        uses: robkooper/sftp-action@master
         with:
-          debug: true
           host: ${{ secrets.SCP_HOST }}
           username: ${{ secrets.SCP_USERNAME }}
           key: ${{ secrets.SCP_KEY }}
-          strip_components: 3
-          source: "doc/src/sphinx/_build/html, "
+          files: "doc/src/sphinx/_build/html/*"
           target: "CATS/${GITHUB_REF##*/}/documentation/sphinx"
       - name: Upload scaladoc to NCSA
         if: github.event_name == 'push'
-        uses: appleboy/scp-action@master
+        uses: robkooper/sftp-action@master
         with:
-          debug: true
           host: ${{ secrets.SCP_HOST }}
           username: ${{ secrets.SCP_USERNAME }}
           key: ${{ secrets.SCP_KEY }}
-          strip_components: 3
-          source: "target/scala-*/api/"
+          files: "target/scala-*/api/*"
           target: "CATS/${GITHUB_REF##*/}/documentation/scaladoc"
